@@ -5,7 +5,6 @@ class Store:
             products = []
         self.products = products
 
-
     def add_product(self, product):
         self.products.append(product)
 
