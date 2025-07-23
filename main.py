@@ -50,4 +50,10 @@ def run_store_interface(store):
             break
 
 
-run_store_interface(best_buy)
+def main():
+    """Launch CLI interface for store operations."""
+    run_store_interface(best_buy)
+
+
+if __name__ == '__main__':
+    main()
