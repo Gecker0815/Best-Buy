@@ -1,15 +1,17 @@
 import products
 import store
 
-# setup initial stock of inventory
-product_list = [ products.Product("MacBook Air M2", price=1450, quantity=100),
-                 products.Product("Bose QuietComfort Earbuds", price=250, quantity=500),
-                 products.Product("Google Pixel 7", price=500, quantity=250)
-               ]
+
+# Setup initial inventory
+product_list = [
+    products.Product("MacBook Air M2", price=1450, quantity=100),
+    products.Product("Bose QuietComfort Earbuds", price=250, quantity=500),
+    products.Product("Google Pixel 7", price=500, quantity=250)
+]
 best_buy = store.Store(product_list)
 
 
-def run_store_interface(store):
+def run_store_interface(store_instance):
     """Run interactive command-line interface for store operations."""
     while True:
         print("\n--- Store Menu ---")
@@ -19,15 +21,14 @@ def run_store_interface(store):
         print("4. Quit")
 
         choice = input("Choose an option (1–4): ")
-
         print("-----")
 
         if choice in ("1", "3"):
-            for index, product in enumerate(store.get_all_products()):
+            for index, product in enumerate(store_instance.get_all_products()):
                 print(f"{index + 1}. {product.show()}")
 
         if choice == "2":
-            print(f"Total of {store.get_total_quantity()} items in store")
+            print(f"Total of {store_instance.get_total_quantity()} items in store")
 
         if choice == "3":
             print("-----")
@@ -42,11 +43,28 @@ def run_store_interface(store):
             if product_amount == "":
                 continue
 
-            store.order([(product_list[int(product_num) - 1], int(product_amount))])
+            try:
+                product_index = int(product_num) - 1
+                quantity = int(product_amount)
 
-            print("Product added to list!")
+                if 0 <= product_index < len(product_list):
+                    selected_product = product_list[product_index]
+                    total = store_instance.order([(selected_product, quantity)])
+
+                    if selected_product.has_errors():
+                        print("⚠️ Error(s):")
+                        for err in selected_product.get_errors():
+                            print(f"- {err}")
+                    else:
+                        print(f"Product added to order! Total: €{total:.2f}")
+                else:
+                    print("Invalid product number.")
+
+            except (ValueError, IndexError):
+                print("Invalid input. Please enter numeric values.")
 
         if choice == "4":
+            print("👋 Goodbye!")
             break
 
 

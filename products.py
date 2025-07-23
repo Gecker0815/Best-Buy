@@ -3,17 +3,18 @@ class Product:
 
     def __init__(self, name, price, quantity):
         """Initialize product with name, price, and quantity."""
-        if not isinstance(name, str):
-            raise TypeError("Name must be of type str")
-        if not isinstance(price, (int, float)):
-            raise TypeError("Price must be a number (int or float)")
-        if not isinstance(quantity, int):
-            raise TypeError("Quantity must be of type int")
-
-        self.name = name
-        self.price = price
-        self.quantity = quantity
+        self.name = name if isinstance(name, str) else "Unknown"
+        self.price = price if isinstance(price, (int, float)) else 0.0
+        self.quantity = quantity if isinstance(quantity, int) else 0
         self.active = True
+        self._errors = []
+
+        if not isinstance(name, str):
+            self._errors.append("Invalid name type.")
+        if not isinstance(price, (int, float)):
+            self._errors.append("Invalid price type.")
+        if not isinstance(quantity, int):
+            self._errors.append("Invalid quantity type.")
 
     def get_quantity(self):
         """Return current quantity."""
@@ -21,7 +22,10 @@ class Product:
 
     def set_quantity(self, quantity):
         """Update product quantity."""
-        self.quantity = quantity
+        if isinstance(quantity, int) and quantity >= 0:
+            self.quantity = quantity
+        else:
+            self._errors.append("Invalid quantity update.")
 
     def is_active(self):
         """Check if product is active."""
@@ -41,7 +45,21 @@ class Product:
 
     def buy(self, quantity):
         """Buy given quantity, update stock, and return total price."""
+        if not isinstance(quantity, int) or quantity <= 0:
+            self._errors.append("Invalid quantity to buy.")
+            return 0.0
+
         if self.quantity - quantity < 0:
-            raise ValueError("Not enough stock available to complete this purchase.")
+            self._errors.append("Not enough stock available.")
+            return 0.0
+
         self.quantity -= quantity
         return float(quantity * self.price)
+
+    def has_errors(self):
+        """Check if the product encountered any errors."""
+        return bool(self._errors)
+
+    def get_errors(self):
+        """Return list of recorded error messages."""
+        return self._errors
