@@ -9,7 +9,8 @@ product_list = [ products.Product("MacBook Air M2", price=1450, quantity=100),
 best_buy = store.Store(product_list)
 
 
-def start(store):
+def run_store_interface(store):
+    """Run interactive command-line interface for store operations."""
     while True:
         print("\n--- Store Menu ---")
         print("1. List all products in store")
@@ -21,7 +22,7 @@ def start(store):
 
         print("-----")
 
-        if choice == "1" or choice == "3":
+        if choice in ("1", "3"):
             for index, product in enumerate(store.get_all_products()):
                 print(f"{index + 1}. {product.show()}")
 
@@ -38,7 +39,7 @@ def start(store):
 
             product_amount = input("Which amount do you want? ")
 
-            if product_num == "":
+            if product_amount == "":
                 continue
 
             store.order([(product_list[int(product_num) - 1], int(product_amount))])
@@ -49,4 +50,4 @@ def start(store):
             break
 
 
-start(best_buy)
+run_store_interface(best_buy)
