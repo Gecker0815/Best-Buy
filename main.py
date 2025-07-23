@@ -49,7 +49,7 @@ def run_store_interface(store_instance):
 
                 if 0 <= product_index < len(product_list):
                     selected_product = product_list[product_index]
-                    total = store_instance.order([(selected_product, quantity)])
+                    total = selected_product.buy(quantity)
 
                     if selected_product.has_errors():
                         print("⚠️ Error(s):")
